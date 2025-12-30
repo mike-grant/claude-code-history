@@ -1,0 +1,24 @@
+# Source files
+src/
+tsconfig.json
+
+# Build artifacts
+dist-binaries/
+claude-history
+
+# Development
+scripts/
+.github/
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+*.log
+.DS_Store

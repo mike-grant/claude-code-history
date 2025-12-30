@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build and Release Binaries
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build binaries
+        run: bun run build:binaries
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create checksums
+        run: |
+          cd dist-binaries
+          shasum -a 256 * > checksums.txt
+          cat checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            dist-binaries/claude-code-history-*
+            dist-binaries/checksums.txt
+          body: |
+            ## Installation
+
+            ### Homebrew (macOS)
+            ```bash
+            brew tap mike-grant/tap
+            brew install claude-code-history
+            ```
+
+            ### Manual Installation
+
+            Download the appropriate binary for your system:
+            - macOS Apple Silicon: `claude-code-history-darwin-arm64`
+            - macOS Intel: `claude-code-history-darwin-x64`
+            - Linux ARM64: `claude-code-history-linux-arm64`
+            - Linux x64: `claude-code-history-linux-x64`
+
+            Then:
+            ```bash
+            # Make executable
+            chmod +x claude-code-history-*
+
+            # Move to PATH
+            sudo mv claude-code-history-* /usr/local/bin/claude-code-history
+            ```
+
+            ## Usage
+
+            ```bash
+            claude-code-history "search query" -f pretty -l 10
+            ```
+
+            See [README](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

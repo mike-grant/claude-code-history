@@ -1,0 +1,42 @@
+{
+  "name": "claude-code-history",
+  "version": "1.0.0",
+  "description": "CLI tool to search Claude Code conversation history",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "claude-code-history": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target node",
+    "build:binary": "bun build src/index.ts --compile --outfile claude-code-history",
+    "build:binaries": "bun run scripts/build-binaries.ts",
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "cli",
+    "search",
+    "history",
+    "conversation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mike-grant/claude-code-history.git"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "dependencies": {
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "bun-types": "latest"
+  }
+}
